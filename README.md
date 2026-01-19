@@ -71,7 +71,7 @@ MINI-QUIZ/
 
 ## 3️⃣ Konfigurasi Environment
 
-Buat file `.env.local` di root project:
+Buat file `.env` di root project:
 
 ```env
 NEXT_PUBLIC_API_URL=https://api.example.com
@@ -132,65 +132,3 @@ NEXT_PUBLIC_SITE_URL=your_base_url
 
 ---
 
-## 5️⃣ Fitur Inti
-
-* ✅ Login pengguna
-* ✅ Mulai & mengerjakan quiz
-* ✅ Navigasi soal
-* ✅ Auto-save jawaban
-* ✅ Timer quiz
-* ✅ Auto-submit saat waktu habis
-* ✅ Riwayat quiz
-* ✅ Reminder quiz aktif (toast global)
-
----
-
-## 6️⃣ Demo Flow (User Journey)
-
-1. **Login**
-
-   * User login ke aplikasi
-
-2. **Dashboard**
-
-   * Sidebar tampil
-   * Jika ada quiz aktif, notifikasi muncul
-
-3. **Mulai Quiz**
-
-   * User masuk ke halaman quiz
-   * Timer mulai berjalan
-   * Jawaban tersimpan otomatis
-
-4. **Pengerjaan Quiz**
-
-   * User dapat berpindah halaman atau refresh tanpa kehilangan jawaban
-
-5. **Waktu Habis**
-
-   * Quiz otomatis disubmit
-   * Notifikasi ditampilkan
-   * User diarahkan ke halaman riwayat
-
-6. **Riwayat Quiz**
-
-   * User dapat melihat daftar quiz yang telah diselesaikan
-
----
-
-## 7️⃣ Repository
-
-* Repository tersedia di GitHub / GitLab
-* Struktur commit rapi dan deskriptif
-* File sensitif seperti `.env` tidak disertakan di repository
-
----
-
-## 8️⃣ Catatan
-
-* Aplikasi berjalan dengan baik secara **local** maupun **deploy**
-* Fokus pengembangan pada:
-
-  * Kode bersih & terstruktur
-  * Best practice Next.js
-  * User Experience sesuai kebutuhan user
