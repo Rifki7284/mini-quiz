@@ -1,27 +1,57 @@
-import { auth } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await auth();
+  const cookieStore = await cookies(); // ✅ jangan await
+  const accessToken = cookieStore.get("access_token")?.value;
 
-  if (!session?.accessToken) {
+  if (!accessToken) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
     headers: {
-      Authorization: `Bearer ${session.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
+
+  if (res.status === 401) {
+    // Token invalid → hapus cookies
+    cookieStore.set({
+      name: "access_token",
+      value: "",
+      path: "/",
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    cookieStore.set({
+      name: "refresh_token",
+      value: "",
+      path: "/",
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return NextResponse.json(
+      { message: "Unauthorized, cookies cleared" },
+      { status: 401 },
+    );
+  }
 
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
 }
 export async function PUT(req: Request) {
   try {
-    const session = await auth();
+    const cookieStore = cookies();
+    const accessToken = (await cookieStore).get("access_token")?.value;
 
-    if (!session?.accessToken) {
+    if (!accessToken) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -30,12 +60,14 @@ export async function PUT(req: Request) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${session.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     });
-
+    if (res.status === 401) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     const data = await res.json();
 
     return NextResponse.json(data, { status: res.status });
@@ -44,7 +76,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(
       { message: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

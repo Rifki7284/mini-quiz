@@ -1,4 +1,4 @@
-type QuizResult = {
+export type QuizResult = {
   id: string;
   user_id: string;
   session_id: string;
@@ -14,10 +14,16 @@ type QuizResult = {
   created_at: string;
 };
 
-type HistoryData = {
+export type HistoryData = {
   results: QuizResult[];
   total_count: number;
   current_page: number;
   total_pages: number;
   limit: number;
+};
+export type PerformanceLevel = {
+  text: string;
+  color: string;
+  bg: string;
+  border: string;
 };

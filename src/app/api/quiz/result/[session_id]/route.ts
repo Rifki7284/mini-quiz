@@ -1,19 +1,21 @@
+import { auth } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ session_id: string }> },
+) {
+  const { session_id } = await params;
+
   const cookieStore = cookies();
   const accessToken = (await cookieStore).get("access_token")?.value;
 
   if (!accessToken) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-  const { searchParams } = req.nextUrl;
-  const limit = searchParams.get("limit") ?? "10";
-  const offset = searchParams.get("offset") ?? "0";
-
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/quiz/history?limit=${limit}&offset=${offset}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/quiz/result/${session_id}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
