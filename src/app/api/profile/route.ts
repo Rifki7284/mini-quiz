@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const cookieStore = await cookies(); // ✅ jangan await
+  const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
 
   if (!accessToken) {
@@ -15,33 +15,6 @@ export async function GET() {
     },
   });
 
-  if (res.status === 401) {
-    // Token invalid → hapus cookies
-    cookieStore.set({
-      name: "access_token",
-      value: "",
-      path: "/",
-      maxAge: 0,
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    cookieStore.set({
-      name: "refresh_token",
-      value: "",
-      path: "/",
-      maxAge: 0,
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    return NextResponse.json(
-      { message: "Unauthorized, cookies cleared" },
-      { status: 401 },
-    );
-  }
 
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });

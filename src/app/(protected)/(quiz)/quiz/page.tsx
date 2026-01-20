@@ -34,8 +34,11 @@ import { ApiResponse } from "@/types/common/apiResponse";
 import { useRouter } from "next/navigation";
 import QuizNotFound from "@/components/quiz/QuizNotFound";
 import LoadingData from "@/components/common/LoadingData";
+import { getTimerStyle } from "@/lib/helper/timerStyle";
 
 const Quiz = () => {
+  const [now, setNow] = useState(Date.now());
+
   const [dataQuiz, setDataQuiz] = useState<ActiveQuiz | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
@@ -79,7 +82,7 @@ const Quiz = () => {
 
     const timer = setInterval(() => {
       setTimeRemaining((prev) => {
-        if (prev <= 1) {
+        if (prev <= 0) {
           handleSubmit();
           return 0;
         }
@@ -99,30 +102,7 @@ const Quiz = () => {
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const getTimerStyle = (seconds: number) => {
-    if (seconds < 300) {
-      return {
-        bg: "bg-red-500",
-        text: "text-white",
-        border: "border-red-600",
-        pulse: "animate-pulse",
-      };
-    } else if (seconds < 900) {
-      return {
-        bg: "bg-amber-500",
-        text: "text-white",
-        border: "border-amber-600",
-        pulse: "",
-      };
-    } else {
-      return {
-        bg: "bg-emerald-500",
-        text: "text-white",
-        border: "border-emerald-600",
-        pulse: "",
-      };
-    }
-  };
+  
 
   const handleAnswerSelect = (questionNumber: number, option: string) => {
     setAnswers((prev) => {

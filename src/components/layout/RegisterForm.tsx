@@ -14,21 +14,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { UserPlus } from "lucide-react";
 import { z } from "zod";
+import { registerSchema, RegisterSchema } from "@/schema/auth/register.schema";
 
-// Register Schema
-const registerSchema = z
-  .object({
-    name: z.string().min(2, "Nama minimal 2 karakter"),
-    email: z.string().email("Email tidak valid"),
-    password: z.string().min(6, "Password minimal 6 karakter"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password tidak cocok",
-    path: ["confirmPassword"],
-  });
-
-type RegisterSchema = z.infer<typeof registerSchema>;
 
 export function RegisterForm({
   className,

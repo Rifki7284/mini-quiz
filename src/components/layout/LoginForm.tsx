@@ -11,11 +11,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { loginSchema, LoginSchema } from "@/schema/auth/login.schema";
 import { LogIn } from "lucide-react";
-import { ApiResponse } from "@/types/common/apiResponse";
 
 export function LoginForm({
   className,
@@ -33,7 +31,7 @@ export function LoginForm({
   const onSubmit = async (data: LoginSchema) => {
     const res = await fetch("/api/auth/login", {
       method: "POST",
-      credentials: "include", 
+      credentials: "include",
       body: JSON.stringify({
         email: data.email,
         password: data.password,
@@ -97,12 +95,7 @@ export function LoginForm({
             >
               Password
             </FieldLabel>
-            <a
-              href="#"
-              className="ml-auto text-sm text-[#E95B0F] hover:text-[#E95B0F]/80 underline-offset-4 hover:underline font-medium"
-            >
-              Forgot password?
-            </a>
+            
           </div>
           <Input
             id="password"

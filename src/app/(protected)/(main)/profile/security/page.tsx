@@ -8,6 +8,7 @@ import {
   changePasswordSchema,
   type ChangePasswordData,
 } from "@/schema/profile/change-password.schema";
+import { ApiResponse } from "@/types/common/apiResponse";
 
 export default function ResetPasswordPage() {
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -69,10 +70,15 @@ export default function ResetPasswordPage() {
           new_password: data.new_password,
         }),
       });
+      const json = await res.json();
+      if (!res.ok || json.success === false) {
+        if (json.error?.code === "INVALID_CREDENTIALS") {
+          toast.error("Password lama yang dimasukkan salah");
+          return;
+        }
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to change password");
+        toast.error("Gagal mengubah password");
+        return;
       }
 
       toast.success("Password berhasil diubah!");
@@ -186,14 +192,16 @@ export default function ResetPasswordPage() {
               {newPassword && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs sm:text-sm">
-                    <span className="text-gray-600 font-medium">Kekuatan password:</span>
+                    <span className="text-gray-600 font-medium">
+                      Kekuatan password:
+                    </span>
                     <span
                       className={`font-semibold ${
                         passwordStrength.strength === 33
                           ? "text-red-600"
                           : passwordStrength.strength === 66
-                          ? "text-amber-600"
-                          : "text-emerald-600"
+                            ? "text-amber-600"
+                            : "text-emerald-600"
                       }`}
                     >
                       {passwordStrength.label}
@@ -306,11 +314,15 @@ export default function ResetPasswordPage() {
                 <ul className="text-xs sm:text-sm text-gray-700 space-y-1.5">
                   <li className="flex items-start gap-2">
                     <span className="text-[#E95B0F] mt-0.5">•</span>
-                    <span>Gunakan password unik yang tidak digunakan di tempat lain</span>
+                    <span>
+                      Gunakan password unik yang tidak digunakan di tempat lain
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#E95B0F] mt-0.5">•</span>
-                    <span>Hindari menggunakan informasi pribadi dalam password</span>
+                    <span>
+                      Hindari menggunakan informasi pribadi dalam password
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#E95B0F] mt-0.5">•</span>
@@ -318,7 +330,9 @@ export default function ResetPasswordPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#E95B0F] mt-0.5">•</span>
-                    <span>Jangan pernah membagikan password Anda kepada siapapun</span>
+                    <span>
+                      Jangan pernah membagikan password Anda kepada siapapun
+                    </span>
                   </li>
                 </ul>
               </div>

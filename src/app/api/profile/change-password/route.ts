@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -23,9 +23,7 @@ export async function POST(req: Request) {
         body: JSON.stringify(body),
       },
     );
-    if (res.status === 401) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+
     const data = await res.json();
 
     return NextResponse.json(data, { status: res.status });

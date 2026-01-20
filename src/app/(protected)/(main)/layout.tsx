@@ -23,7 +23,6 @@ import { getStoredAnswers } from "@/lib/helper/getStoredAnswer";
 import { buildFinalAnswers } from "@/lib/helper/buildFinalAnswers";
 import { ActiveQuizProvider, useActiveQuiz } from "@/context/QuizContext";
 
-
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -35,9 +34,19 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const isBlockedToastPage =
     pathname === "/quiz" || pathname.startsWith("/quiz/session");
+  const [now, setNow] = useState<number | null>(null);
 
+  useEffect(() => {
+    setNow(Date.now());
+
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   const isExpired = (expiresAt: string) =>
-    new Date(expiresAt).getTime() <= Date.now();
+    now !== null && new Date(expiresAt).getTime() <= now;
 
   const format = (text: string) =>
     text.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
@@ -97,7 +106,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           autoClose: false,
           closeOnClick: false,
           draggable: false,
-        }
+        },
       );
 
       return;
@@ -127,7 +136,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         autoClose: false,
         closeOnClick: false,
         draggable: false,
-      }
+      },
     );
 
     setToastShown(true);
@@ -165,9 +174,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </Breadcrumb>
         </header>
 
-        <main className="flex flex-1 flex-col gap-4 p-10">
-          {children}
-        </main>
+        <main className="flex flex-1 flex-col gap-4 p-10">{children}</main>
 
         <ToastContainer />
       </SidebarInset>
